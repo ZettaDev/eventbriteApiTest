@@ -17,7 +17,7 @@ function llamadaApi(e) {
     var htmlDatosTipo2 = "";
     var htmlDatosTipo3 = "";
 
-    $.get( urlApi , function( data ) {
+    $.getJSON( urlApi , function( data ) {
         //$( "#result" ).html( JSON.stringify( data ) );
         //alert( "Load was performed." );
 
