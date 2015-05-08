@@ -10,7 +10,7 @@ $(document).ready( function() {
 
 function llamadaApi(e) {
     //var urlApi = "https://www.eventbriteapi.com/v3/events/search/?organizer.id="+eventBriteOrganizerId+"&token="+eventBriteToken;
-    var urlApi = "http://localhost/fct/eventbriteApiTest/js/data.json";
+    var urlApi = "http://" + window.location.host + "/eventbriteApiTest/js/data.json";
     //alert(urlApi);
 
     var htmlDatosTipo1 = "";
