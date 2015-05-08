@@ -10,14 +10,14 @@ $(document).ready( function() {
 
 function llamadaApi(e) {
     //var urlApi = "https://www.eventbriteapi.com/v3/events/search/?organizer.id="+eventBriteOrganizerId+"&token="+eventBriteToken;
-    var urlApi = "http://localhost/fct/eventbriteApiTest/js/data.json";
+    var urlApi = "js/data.json";
     //alert(urlApi);
 
     var htmlDatosTipo1 = "";
     var htmlDatosTipo2 = "";
     var htmlDatosTipo3 = "";
 
-    $.get( urlApi , function( data ) {
+    $.getJSON( urlApi , function( data ) {
         //$( "#result" ).html( JSON.stringify( data ) );
         //alert( "Load was performed." );
 
