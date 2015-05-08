@@ -6,3 +6,10 @@ body {
 .navbar {
   margin-bottom: 20px;
 }
+
+.cities {
+    background-color:black;
+    color:white;
+    margin:20px;
+    padding:20px;
+}

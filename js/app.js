@@ -1,6 +1,6 @@
 "use strict";
-var eventBriteToken = "";
-var eventBriteOrganizerId = "7906052665";
+var eventBriteToken = "MQRI5BWCXONRZZOQDKL3";
+var eventBriteOrganizerId = "8135119990";
 // config general de la app
 
 
@@ -9,7 +9,8 @@ $(document).ready( function() {
 });
 
 function llamadaApi(e) {
-    var urlApi = "https://www.eventbriteapi.com/v3/events/search/?organizer.id="+eventBriteOrganizerId+"&token="+eventBriteToken;
+    //var urlApi = "https://www.eventbriteapi.com/v3/events/search/?organizer.id="+eventBriteOrganizerId+"&token="+eventBriteToken;
+    var urlApi = "data.json";
     //alert(urlApi);
 
     $.get( urlApi , function( data ) {
@@ -21,7 +22,7 @@ function llamadaApi(e) {
             htmlInsertar += "<div class='col-md-8'>";
             htmlInsertar += "<p>"+evento.name.html+"</p><br />";
             htmlInsertar += "<p>Empieza el: "+evento.start.local+" Acaba el: "+evento.end.local+"</p></div>";
-            htmlInsertar += "<div class='col-md-4'><img src='"+evento.logo.url+"'></div>";
+            //htmlInsertar += "<div class='col-md-4'><img src='"+evento.logo.url+"'></div>";
             htmlInsertar += "</div>";
             htmlInsertar += "<div class='row'>";
             htmlInsertar += "<div class='col-md-8'><div class='panel panel-default'><div class='panel-heading'>";
@@ -32,12 +33,12 @@ function llamadaApi(e) {
                 htmlInsertar += "<tr>";
                 htmlInsertar += "<td>"+precio.name+"</td>";
                 htmlInsertar += "<td>"+precio.description+"</td>";
-                htmlInsertar += "<td>"+precio.cost.display+"</td>";
+                //htmlInsertar += "<td>"+precio.cost.display+"</td>";
                 htmlInsertar += "</tr>";
             });
             htmlInsertar += "</table>";
             htmlInsertar += "</div></div></div>";
-            htmlInsertar += "<div class='col-md-4'>"+evento.organizer.description.html+"</div>";
+            //htmlInsertar += "<div class='col-md-4'>"+evento.organizer.description.html+"</div>";
             htmlInsertar += "</div>";
             htmlInsertar += "<div class='col-md-12'><div class='panel panel-default'><div class='panel-heading'>";
             htmlInsertar += "<h3 class='panel-title'>Detalles del evento</h3>";
