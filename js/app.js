@@ -13,14 +13,11 @@ function llamadaApi(e) {
     var urlApi = "js/data.json";
     //alert(urlApi);
 
-    var htmlDatosTipo1 = "";
-    var htmlDatosTipo2 = "";
-    var htmlDatosTipo3 = "";
-
     $.getJSON( urlApi , function( data ) {
         //$( "#result" ).html( JSON.stringify( data ) );
         //alert( "Load was performed." );
-
+        var tipos = [];
+        // recorremos los eventos
         $.each(data.events,function(i, evento){
             var htmlOut = "<h1>titulo</h1><br />";
             htmlOut += "<p>"+evento.name.html+"</p><br /><br />";
@@ -39,18 +36,30 @@ function llamadaApi(e) {
             });
             htmlOut += "<h1>detalle evento</h1><br />";
             var edesc = evento.description.html;
-            htmlOut += "<p>"+edesc+"</p><br /><br />";
-            if (edesc.indexOf("<div class='tipo1") == 0){
-                htmlDatosTipo1 += htmlOut;
-            } else if (edesc.indexOf("<div class='tipo2") == 0){
-                htmlDatosTipo2 += htmlOut;
-            } else if (edesc.indexOf("<div class='tipo3") == 0){
-                htmlDatosTipo3 += htmlOut;
+            var edescjq = $.parseHTML(edesc);
+            //htmlDatosTipo1 += $(edescjq).attr("data-tag");
+            //htmlDatosTipo2 += edesc;
+
+            if(tipos.hasOwnProperty($(edescjq).attr("data-tag"))){
+                tipos[$(edescjq).attr("data-innobasque_eventbrite_category")] += htmlOut;
+            } else {
+                tipos.push({
+                    $(edescjq).attr("data-innobasque_eventbrite_category"):htmlOut
+                });
             }
+
         });
-       $( "#tipo1" ).html( htmlDatosTipo1 );
-       $( "#tipo2" ).html( htmlDatosTipo2 );
-       $( "#tipo3" ).html( htmlDatosTipo3 );
+        // creamos el html
+        $('#accordion').empty();
+        $.each(tipos,function(key,value){
+            var htmlCollapsible = "<div class='panel panel-default'><div class='panel-heading' role='tab' id='"+key+"'><h4 class='panel-title'>";
+            htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion' href='#"+key+"' aria-expanded='true' aria-controls='collapseOne'>";
+            htmlCollapsible += key;
+            htmlCollapsible += "</a></h4></div><div id='collapseOne' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='headingOne'><div class='panel-body'>";
+            htmlCollapsible += value;
+            htmlCollapsible += "</div></div></div>";
+            $('#accordion').append(htmlCollapsible);
+        });
     });
 
 }

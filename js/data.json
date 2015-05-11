@@ -14,7 +14,7 @@
             },
             "description": {
                 "text": "Descripcion del evento 1.",
-                "html": "<div class='tipo1'>Descripcion del evento 1.</div>"
+                "html": "<div data-innobasque_eventbrite_category='tipo1'>Descripcion del evento 1.</div>"
             },
             "id": "15708137462",
             "url": "http://www.eventbrite.es/e/entradas-v-bachatea-world-congress-2016-17-al-21-de-febrero-15708137462?aff=ebapi",
@@ -136,7 +136,7 @@
             },
             "description": {
                 "text": "Descripcion del evento 2.",
-                "html": "<div class='tipo2'>Descripcion del evento 2.</div>"
+                "html": "<div data-innobasque_eventbrite_category='tipo2'>Descripcion del evento 2.</div>"
             },
             "id": "15546715645",
             "url": "http://www.eventbrite.es/e/entradas-bachataopen-internacional-2015-albacete-spain-15546715645?aff=ebapi",
@@ -259,7 +259,7 @@
             },
             "description": {
                 "text": "Descripcion del evento 3.",
-                "html": "<div class='tipo3'>Descripcion del evento 3.</div>"
+                "html": "<div data-innobasque_eventbrite_category='tipo3'>Descripcion del evento 3.</div>"
             },
             "id": "15546715645",
             "url": "http://www.eventbrite.es/e/entradas-bachataopen-internacional-2015-albacete-spain-15546715645?aff=ebapi",
@@ -381,7 +381,7 @@
             },
             "description": {
                 "text": "Descripcion del evento 4.",
-                "html": "<div class='tipo2'>Descripcion del evento 4.</div>"
+                "html": "<div data-innobasque_eventbrite_category='tipo2'>Descripcion del evento 4.</div>"
             },
             "id": "15546715645",
             "url": "http://www.eventbrite.es/e/entradas-bachataopen-internacional-2015-albacete-spain-15546715645?aff=ebapi",
