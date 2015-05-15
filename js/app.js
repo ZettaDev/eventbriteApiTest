@@ -5,27 +5,44 @@ var eventBriteOrganizerId = "3342909704";
 // fin config
 
 // variables
-var categoryApi = {};
-var fechaInicio = null;
-var fechaFin = null;
+var fechaInicio = "";
+var fechaFin = "";
 var categoriaSeleccionada = null;
 // fin variables
 
-
+// ready
 $(document).ready( function() {
-    $('#fecha-inici').on('change',filtrado);
-    $('#fecha-fin').on('change',filtrado);
-    $('#category').on('change',filtrado);
+    $('#fecha-inici').on('change',filtradoFecha);
+    $('#fecha-fin').on('change',filtradoFecha);
+    $('#category').on('change',filtradoCategoria);
     llamadaApi();
 });
 
-function filtrado(){
-
+// filtrar por fechas
+function filtradoFecha(e){
+    if (($('#fecha-inici').val() != "") && ($('#fecha-fin').val() != "")){
+        fechaInicio = $('#fecha-inici').val();
+        fechaFin = $('#fecha-fin').val();
+        llamadaApi();
+    }
 }
 
-function llamadaApi(e) {
-    //var urlApi = "https://www.eventbriteapi.com/v3/events/search/?organizer.id="+eventBriteOrganizerId+"&token="+eventBriteToken;
-    var urlApi = "js/data.json";
+// filtrar por categorias
+function filtradoCategoria(e){
+    categoriaSeleccionada = $("#category").val();
+    llamadaApi();
+}
+
+// llamada y maquetacion de la respuesta de la api
+function llamadaApi(e){
+    var urlApi = "";
+    if (($('#fecha-inici').val() != null) && ($('#fecha-fin').val() != "")){
+        urlApi = "https://www.eventbriteapi.com/v3/events/search/?organizer.id="+eventBriteOrganizerId+"&start_date.range_start="+fechaInicio+"T00:00:00Z&start_date.range_end="+fechaFin+"T00:00:00Z&token="+eventBriteToken;
+    } else {
+        urlApi = "https://www.eventbriteapi.com/v3/events/search/?organizer.id="+eventBriteOrganizerId+"&token="+eventBriteToken;
+    }
+    //urlApi = "js/data.json";
+    var categoryApi = {};
     $.getJSON( urlApi , function( data ) {
         // recorremos los eventos
         $.each(data.events,function(i, evento){
@@ -47,37 +64,40 @@ function llamadaApi(e) {
             htmlOut += "<h1>detalle evento</h1><br />";
             var edesc = evento.description.html;
             htmlOut += edesc;
-            console.log(edesc);
-            //var edescjq = $.parseHTML(edesc);
-            //var categoriasEvento = $(edescjq+".div").last().attr("data-innobasque_eventbrite_category");
-            //.attr("data-innobasque_eventbrite_category")
-            //console.log(edescjq);
-            console.log($(edesc));
-            /*
-            $.each(categoriasEvento,function(key,value){
-                if(categoryApi.hasOwnProperty(value)){
-                    categoryApi[value] += htmlOut;
+            var categoriasEvento = edesc.substr(edesc.lastIndexOf("<div data-innobasque_eventbrite_category='"), edesc.lastIndexOf("'></div>"));
+            if (categoriasEvento.length){
+                categoriasEvento = categoriasEvento.split("'")[1].split(",");
+                $.each(categoriasEvento,function(key,value){
+                    if(categoryApi.hasOwnProperty(value)){
+                        categoryApi[value] += htmlOut;
+                    } else {
+                        categoryApi[value] = htmlOut;
+                    }
+                });
+            } else {
+                if(categoryApi.hasOwnProperty("otros")){
+                    categoryApi["otros"] += htmlOut;
                 } else {
-                    categoryApi[value] = htmlOut;
+                    categoryApi["otros"] = htmlOut;
                 }
-            });
-            */
+            }
         });
+        crearLista(categoryApi);
     });
-    //crearLista();
 }
 
-function crearLista(){
-// creamos el html
+function crearLista(categoryApi){
+    // creamos el html
     $('#eventList').empty();
     $.each(categoryApi,function(key,value){
         if (key == categoriaSeleccionada || categoriaSeleccionada == null){
-            var htmlCollapsible = "<div class='panel panel-default'><div class='panel-heading' role='tab' id='heading"+key+"'><h4 class='panel-title'>";
+            var htmlCollapsible = "<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>";
+            htmlCollapsible += "<div class='panel panel-default'><div class='panel-heading' role='tab' id='heading"+key+"'><h4 class='panel-title'>";
             htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion' href='#collapse"+key+"' aria-expanded='true' aria-controls='collapse"+key+"'>";
             htmlCollapsible += key;
             htmlCollapsible += "</a></h4></div><div id='collapse"+key+"' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='heading"+key+"'><div class='panel-body'>";
             htmlCollapsible += value;
-            htmlCollapsible += "</div></div></div>";
+            htmlCollapsible += "</div></div></div></div>";
             $('#eventList').append(htmlCollapsible);
         }
     });
