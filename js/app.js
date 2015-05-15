@@ -1,6 +1,6 @@
 "use strict";
 // configuracion global
-var eventBriteToken = "";
+var eventBriteToken = "H242DTR22NVJD52EO7";
 var eventBriteOrganizerId = "3342909704";
 // fin config
 
@@ -62,10 +62,15 @@ function llamadaApi(e){
                 htmlOut += "<p>"+htmlTabla+"</p><br /><br />";
             });
             htmlOut += "<h1>detalle evento</h1><br />";
+            // recuperamos en una variable la descipcion del evento que contiene el div con las categorias
             var edesc = evento.description.html;
+            // lo añadimos al html a exportar porque nos hara falta
             htmlOut += edesc;
+            // recogemos el string que contiene la ultima ocurrencia del div con las categorias
             var categoriasEvento = edesc.substr(edesc.lastIndexOf("<div data-innobasque_eventbrite_category='"), edesc.lastIndexOf("'></div>"));
+            // preguntamos si tiene categorias o esta vacio
             if (categoriasEvento.length){
+                // lo añadimos a la categoria correspondiente
                 categoriasEvento = categoriasEvento.split("'")[1].split(",");
                 $.each(categoriasEvento,function(key,value){
                     if(categoryApi.hasOwnProperty(value)){
@@ -75,6 +80,7 @@ function llamadaApi(e){
                     }
                 });
             } else {
+                // lo agregamos a una categoria comun llamada otros
                 if(categoryApi.hasOwnProperty("otros")){
                     categoryApi["otros"] += htmlOut;
                 } else {
@@ -82,6 +88,7 @@ function llamadaApi(e){
                 }
             }
         });
+        // llamamos a la funcion pasandole el array para que genere el html a mostrar
         crearLista(categoryApi);
     });
 }
