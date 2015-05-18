@@ -1,7 +1,7 @@
 "use strict";
 // configuracion global
 var eventBriteToken = "";
-var eventBriteOrganizerId = "1590310792";
+var eventBriteOrganizerId = "141339170718";
 // fin config
 
 // variables
@@ -37,9 +37,9 @@ function filtradoCategoria(e){
 function llamadaApi(e){
     var urlApi = "";
     if (($('#fecha-inici').val() != null) && ($('#fecha-fin').val() != "")){
-        urlApi = "https://www.eventbriteapi.com/v3/events/search/?organizer.id="+eventBriteOrganizerId+"&start_date.range_start="+fechaInicio+"T00:00:00Z&start_date.range_end="+fechaFin+"T00:00:00Z&token="+eventBriteToken;
+        urlApi = "https://www.eventbriteapi.com/v3/events/search/?user.id="+eventBriteOrganizerId+"&start_date.range_start="+fechaInicio+"T00:00:00Z&start_date.range_end="+fechaFin+"T00:00:00Z&token="+eventBriteToken;
     } else {
-        urlApi = "https://www.eventbriteapi.com/v3/events/search/?organizer.id="+eventBriteOrganizerId+"&token="+eventBriteToken;
+        urlApi = "https://www.eventbriteapi.com/v3/events/search/?user.id="+eventBriteOrganizerId+"&token="+eventBriteToken;
     }
     //urlApi = "js/data.json";
     var categoryApi = {};
@@ -49,7 +49,11 @@ function llamadaApi(e){
             var htmlOut = "<h1>titulo</h1><br />";
             htmlOut += "<p>"+evento.name.html+"</p><br /><br />";
             htmlOut += "<h1>localizacion</h1><br />";
-            htmlOut += "<p>"+evento.venue.name+" "+evento.venue.address.address_1+" "+evento.venue.address.region+"</p><br /><br />";
+            if (evento.venue == null) {
+                htmlOut += "<p> Evento Online </p><br /><br />";
+            } else {
+                htmlOut += "<p>"+evento.venue.name+" "+evento.venue.address.address_1+" "+evento.venue.address.region+"</p><br /><br />";
+            }
             htmlOut += "<h1>entradas</h1><br />";
             $.each(evento.ticket_classes,function(i, precio){
                 var htmlTabla = "<table class='table table-striped'><tr><td><strong>TIPO DE ENTRADA</strong></td><td><strong>DESCRIPCION</strong></td><td><strong>PRECIO</strong></td></tr>";
@@ -71,11 +75,11 @@ function llamadaApi(e){
             // lo añadimos al html a exportar porque nos hara falta
             htmlOut += edesc;
             // recogemos el string que contiene la ultima ocurrencia del div con las categorias
-            var categoriasEvento = edesc.substr(edesc.lastIndexOf("<div data-innobasque_eventbrite_category='"), edesc.lastIndexOf("'></div>"));
+            var categoriasEvento = edesc.substr(edesc.lastIndexOf("<DIV DATA-INNOBASQUE_EVENTBRITE_CATEGORY=\""), edesc.lastIndexOf("\">"));
             // preguntamos si tiene categorias o esta vacio
             if (categoriasEvento.length){
                 // lo añadimos a la categoria correspondiente
-                categoriasEvento = categoriasEvento.split("'")[1].split(",");
+                categoriasEvento = categoriasEvento.split("\"")[1].split(",");
                 $.each(categoriasEvento,function(key,value){
                     if(categoryApi.hasOwnProperty(value)){
                         categoryApi[value] += htmlOut;
