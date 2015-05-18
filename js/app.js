@@ -1,7 +1,7 @@
 "use strict";
 // configuracion global
-var eventBriteToken = "H242DTR22NVJD52EO7";
-var eventBriteOrganizerId = "3342909704";
+var eventBriteToken = "";
+var eventBriteOrganizerId = "1590310792";
 // fin config
 
 // variables
@@ -56,7 +56,11 @@ function llamadaApi(e){
                 htmlTabla += "<tr>";
                 htmlTabla += "<td>"+precio.name+"</td>";
                 htmlTabla += "<td>"+precio.description+"</td>";
-                htmlTabla += "<td>"+precio.cost.display+"</td>";
+                if (precio.free) {
+                    htmlTabla += "<td>Gratis</td>";
+                } else {
+                    htmlTabla += "<td>"+precio.cost.display+"</td>";
+                }
                 htmlTabla += "</tr>";
                 htmlTabla += "</table>";
                 htmlOut += "<p>"+htmlTabla+"</p><br /><br />";
