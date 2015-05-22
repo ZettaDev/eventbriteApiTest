@@ -14,9 +14,12 @@ var categoryApi = {} ;
 
 // ready
 $(document).ready( function() {
+    var language = window.navigator.userLanguage || window.navigator.language;
+    moment.locale(language);
     $('#fecha-inici').on('change',filtradoFecha);
     $('#fecha-fin').on('change',filtradoFecha);
     $('#category').on('change',filtradoCategoria);
+    $('#status').on('change',filtradoStatus);
     $('#eventList').empty();
     fechaInicio = "";
     fechaFin = "";
@@ -70,11 +73,17 @@ function filtradoCategoria(e){
     $('#heading'+categoriaSeleccionada).parent().parent().show();
 }
 
+// filtrar por status
+function filtradoStatus(e){
+    var statusSeleccionada = $("#status").val();
+
+}
+
 
 // llamada recursiva para mas paginas
 function llamadaApi() {
     var urlApi = "";
-    urlApi = "https://www.eventbriteapi.com/v3/users/"+eventBriteUserId+"/owned_events/?order_by=start_asc&status=ended&page="+paginaActual+"&token="+eventBriteToken;
+    urlApi = "https://www.eventbriteapi.com/v3/users/"+eventBriteUserId+"/owned_events/?order_by=start_desc&page="+paginaActual+"&token="+eventBriteToken;
     //urlApi = "js/data.json";
     if (paginaActual <= numPaginas){
         $.getJSON( urlApi , function( data ) {
@@ -92,77 +101,58 @@ function llamadaApi() {
 // llamada y maquetacion de la respuesta de la api
 function usoDatos(datos){
     $.each(datos.events,function(i, evento){
-        //if (filtradoFecha(evento.start.local) && filtradoFecha(evento.end.local)) {
-            var htmlOut = "<div id='evento'><h1>titulo</h1><br />";
-            htmlOut += "<p><a href='https://www.eventbrite.com/edit?eid="+evento.id+"'>"+evento.name.html+"</a></p><br /><br />";
-            htmlOut += "<h1>Fecha Inicio</h1><br />";
-            htmlOut += "<p id='FechaInicio'>"+evento.start.local+"</p><br /><br />";
-            htmlOut += "<h1>Fecha Fin</h1><br />";
-            htmlOut += "<p id='FechaFin'>"+evento.end.local+"</p><br /><br />";
-            htmlOut += "<h1>localizacion</h1><br />";
-            if (evento.venue == null) {
-                htmlOut += "<p> Evento Online </p><br /><br />";
-            } else {
-                htmlOut += "<p>"+evento.venue.name+" "+evento.venue.address.address_1+" "+evento.venue.address.region+"</p><br /><br />";
+        // creacion del evento html
+        var htmlOut = "<li id='evento'>";
+        var startMoment = moment(evento.start.local);
+        htmlOut += "<time datetime='"+startMoment.format("L")+"'><span class='day'>"+startMoment.format("D")+"</span><span class='month'>"+startMoment.format("MMM")+"</span></time>";
+        if (evento.logo) {
+            htmlOut += "<img src='"+evento.logo.url+"'/>";
+        }
+        htmlOut +="<div class='info'><h2 class='title'>"+evento.name.html+"</h2>";
+        htmlOut += "<p class='desc'>"+evento.description.text.substr(1,700)+"...</p>";
+        var endMoment = moment(evento.end.local);
+        htmlOut += "<ul>";
+        htmlOut += "<span class='status"+evento.status+"' style='width:33%;'>Status: "+evento.status+"</span>";
+        htmlOut += "<span class='enddate' style='width:33%;'>Finaliza el: "+endMoment.format("LLLL")+"</span>";
+        htmlOut += "<li style='width:33%;'><a href='https://www.eventbrite.com/edit?eid="+evento.id+"'> Editar</a></li>";
+        htmlOut += "</ul></div></li>";
+        // fin del evento html
+
+        // filtrado por categorias
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(evento.description.html, "text/html");
+        var fechaNueva = new Date('0001-01-01T00:00:00Z');
+        var divNuevo = null;
+        $(doc).find('div[DATA-INNOBASQUE_EVENTBRITE_CATEGORY]').each(function(i,div){
+            var fechaComparar = new Date($(div).attr('DATA-INNOBASQUE_EVENTBRITE_TIMESTAMP'));
+            if (fechaComparar > fechaNueva) {
+                fechaNueva = fechaComparar;
+                divNuevo = div;
             }
-            htmlOut += "<h1>entradas</h1><br />";
-            $.each(evento.ticket_classes,function(i, precio){
-                var htmlTabla = "<table class='table table-striped'><tr><td><strong>TIPO DE ENTRADA</strong></td><td>"
-                htmlTabla += "<strong>DESCRIPCION</strong></td><td><strong>PRECIO</strong></td></tr>";
-                htmlTabla += "<tr>";
-                htmlTabla += "<td>"+precio.name+"</td>";
-                htmlTabla += "<td>"+precio.description+"</td>";
-                if (precio.free) {
-                    htmlTabla += "<td>Gratis</td>";
+        });
+        var categoriasEvento = "";
+        if (divNuevo != null) {
+            categoriasEvento = $(divNuevo).attr('DATA-INNOBASQUE_EVENTBRITE_CATEGORY');
+        }
+        // preguntamos si tiene categorias o esta vacio
+        if (categoriasEvento.length){
+            // lo añadimos a la categoria correspondiente
+            categoriasEvento = categoriasEvento.split(",");
+            $.each(categoriasEvento,function(key,value){
+                if(categoryApi.hasOwnProperty(value)){
+                    categoryApi[value] += htmlOut;
                 } else {
-                    htmlTabla += "<td>"+precio.cost.display+"</td>";
-                }
-                htmlTabla += "</tr>";
-                htmlTabla += "</table>";
-                htmlOut += "<p>"+htmlTabla+"</p><br /><br />";
-            });
-            htmlOut += "<h1>detalle evento</h1><br />";
-            // recuperamos en una variable la descipcion del evento que contiene el div con las categorias
-            var edesc = evento.description.html;
-            // lo añadimos al html a exportar porque nos hara falta
-            htmlOut += edesc+"</div>";
-            // recogemos el string que contiene la ultima ocurrencia del div con las categorias
-            //var categoriasEvento = edesc.substr(edesc.lastIndexOf("<DIV DATA-INNOBASQUE_EVENTBRITE_CATEGORY=\""), edesc.lastIndexOf("\">"));
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(edesc, "text/html");
-            var fechaNueva = new Date('0001-01-01T00:00:00Z');
-            var divNuevo = null;
-            $(doc).find('div[DATA-INNOBASQUE_EVENTBRITE_CATEGORY]').each(function(i,div){
-                var fechaComparar = new Date($(div).attr('DATA-INNOBASQUE_EVENTBRITE_TIMESTAMP'));
-                if (fechaComparar > fechaNueva) {
-                    fechaNueva = fechaComparar;
-                    divNuevo = div;
+                    categoryApi[value] = htmlOut;
                 }
             });
-            var categoriasEvento = "";
-            if (divNuevo != null) {
-                categoriasEvento = $(divNuevo).attr('DATA-INNOBASQUE_EVENTBRITE_CATEGORY');
-            }
-            // preguntamos si tiene categorias o esta vacio
-            if (categoriasEvento.length){
-                // lo añadimos a la categoria correspondiente
-                categoriasEvento = categoriasEvento.split(",");
-                $.each(categoriasEvento,function(key,value){
-                    if(categoryApi.hasOwnProperty(value)){
-                        categoryApi[value] += htmlOut;
-                    } else {
-                        categoryApi[value] = htmlOut;
-                    }
-                });
+        } else {
+            // lo agregamos a una categoria comun llamada otros
+            if(categoryApi.hasOwnProperty("otros")){
+                categoryApi["otros"] += htmlOut;
             } else {
-                // lo agregamos a una categoria comun llamada otros
-                if(categoryApi.hasOwnProperty("otros")){
-                    categoryApi["otros"] += htmlOut;
-                } else {
-                    categoryApi["otros"] = htmlOut;
-                }
+                categoryApi["otros"] = htmlOut;
             }
-        //}
+        }
     });
 
 }
@@ -175,9 +165,11 @@ function crearLista(categoryApi){
         htmlCollapsible += "<div class='panel panel-default'><div class='panel-heading' role='tab' id='heading"+key+"'><h4 class='panel-title'>";
         htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion' href='#collapse"+key+"' aria-expanded='true' aria-controls='collapse"+key+"'>";
         htmlCollapsible += key;
-        htmlCollapsible += "</a></h4></div><div id='collapse"+key+"' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='heading"+key+"'><div class='panel-body'>";
+        htmlCollapsible += "</a></h4></div><div id='collapse"+key+"' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='heading"+key+"'><div class='panel-body'><ul class='event-list'>";
         htmlCollapsible += value;
-        htmlCollapsible += "</div></div></div></div>";
+        htmlCollapsible += "</ul></div></div></div></div>";
         $('#eventList').append(htmlCollapsible);
     });
 }
+
+
