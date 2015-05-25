@@ -14,13 +14,18 @@ var categoryApi = {} ;
 
 // ready
 $(document).ready( function() {
+    // configuracion de moment.js
     var language = window.navigator.userLanguage || window.navigator.language;
     moment.locale(language);
-    $('#fecha-inici').on('change',filtradoFecha);
-    $('#fecha-fin').on('change',filtradoFecha);
+    // fin de configuracion
+    // eventros de inicio
+    $('#fecha-inici').on('change',filtradoFechaInici);
+    $('#fecha-fin').on('change',filtradoFechaFin);
     $('#category').on('change',filtradoCategoria);
     $('#status').on('change',filtradoStatus);
     $('#eventList').empty();
+    // fin de eventos
+    // inicio de la app
     fechaInicio = "";
     fechaFin = "";
     paginaActual = 1;
@@ -29,17 +34,32 @@ $(document).ready( function() {
 });
 
 // filtrar por fechas
-function filtradoFecha(e){
-    if (($('#fecha-inici').val() != "") && ($('#fecha-fin').val() != "")){
-        var fromFechaInicio = $('#fecha-inici').val();
-        var fromFechaFin = $('#fecha-fin').val();
-        console.log(fromFechaInicio);
-        console.log(fromFechaFin);
-    }
+function filtradoFechaInici(e){
+    $('.categorias').hide();
+    var fromFechaInicio = $('#fecha-inici').val();
+    $('.categorias').find('time').each(function(i, time){
+        if ($(time).hasClass('startdate')) {
+            if(compararFecha(fromFechaInicio,$(time).attr('DATA-INNOBASQUE_EVENTBRITE_DATESTART')) != -1)   {
+                $(time).closest('div .categorias').show();
+            }
+        }
+    });
+}
+function filtradoFechaFin(e){
+    $('.categorias').hide();
+    var fromFechaFin = $('#fecha-fin').val();
+    $('.categorias').find('span').each(function(i, span){
+        if ($(span).hasClass('enddate')){
+            if(compararFecha(fromFechaFin,$(span).attr('DATA-INNOBASQUE_EVENTBRITE_DATEEND')) != -1)   {
+                $(span).closest('div .categorias').show();
+            }
+        }
+    });
 }
 
+
 // comparador de rango de fechas
-function filtradoFecha(fechaComprobar){
+function filtradoFecha2(fechaComprobar){
     if ((fechaInicio != "") && (fechaFin != "") && (fechaComprobar != "")){
         var from = fechaComprobar.split("-");
         var dateComprobar = new Date(from[2], from[1] - 1, from[0]);
@@ -69,14 +89,23 @@ function compararFecha(fechaOriginal,fechaComprobar){
 // filtrar por categorias
 function filtradoCategoria(e){
     var categoriaSeleccionada = $("#category").val();
-    $('.categorias').hide();
-    $('#heading'+categoriaSeleccionada).parent().parent().show();
+    if (categoriaSeleccionada == "todos") {
+        $('.categorias').show();
+    } else {
+        $('.categorias').hide();
+        $('#heading-'+categoriaSeleccionada).closest('div .categorias').show();
+    }
 }
 
 // filtrar por status
 function filtradoStatus(e){
     var statusSeleccionada = $("#status").val();
-
+    if (statusSeleccionada == "todos") {
+        $('.categorias').show();
+    } else {
+        $('.categorias').hide();
+        $('.status-'+statusSeleccionada).closest('div .categorias').show();
+    }
 }
 
 
@@ -104,7 +133,7 @@ function usoDatos(datos){
         // creacion del evento html
         var htmlOut = "<li id='evento'>";
         var startMoment = moment(evento.start.local);
-        htmlOut += "<time datetime='"+startMoment.format("L")+"'><span class='day'>"+startMoment.format("D")+"</span><span class='month'>"+startMoment.format("MMM")+"</span></time>";
+        htmlOut += "<time class='startdate' DATA-INNOBASQUE_EVENTBRITE_DATESTART='"+startMoment.format('YYYY[-]MM[-]DD')+"'><span class='day'>"+startMoment.format("D")+"</span><span class='month'>"+startMoment.format("MMM")+"</span></time>";
         if (evento.logo) {
             htmlOut += "<img src='"+evento.logo.url+"'/>";
         }
@@ -112,8 +141,8 @@ function usoDatos(datos){
         htmlOut += "<p class='desc'>"+evento.description.text.substr(1,700)+"...</p>";
         var endMoment = moment(evento.end.local);
         htmlOut += "<ul>";
-        htmlOut += "<span class='status"+evento.status+"' style='width:33%;'>Status: "+evento.status+"</span>";
-        htmlOut += "<span class='enddate' style='width:33%;'>Finaliza el: "+endMoment.format("LLLL")+"</span>";
+        htmlOut += "<span class='status-"+evento.status+"' style='width:33%;'>Status: "+evento.status+"</span>";
+        htmlOut += "<span class='enddate' style='width:33%;' DATA-INNOBASQUE_EVENTBRITE_DATEEND='"+endMoment.format('YYYY[-]MM[-]DD')+"'>Finaliza el: "+endMoment.format("LLLL")+"</span>";
         htmlOut += "<li style='width:33%;'><a href='https://www.eventbrite.com/edit?eid="+evento.id+"'> Editar</a></li>";
         htmlOut += "</ul></div></li>";
         // fin del evento html
@@ -162,10 +191,10 @@ function crearLista(categoryApi){
     // creamos el html
     $.each(categoryApi,function(key,value){
         var htmlCollapsible = "<div class='panel-group categorias' id='accordion' role='tablist' aria-multiselectable='true'>";
-        htmlCollapsible += "<div class='panel panel-default'><div class='panel-heading' role='tab' id='heading"+key+"'><h4 class='panel-title'>";
-        htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion' href='#collapse"+key+"' aria-expanded='true' aria-controls='collapse"+key+"'>";
+        htmlCollapsible += "<div class='panel panel-default'><div class='panel-heading' role='tab' id='heading-"+key+"'><h4 class='panel-title'>";
+        htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion' href='#collapse-"+key+"' aria-expanded='true' aria-controls='collapse-"+key+"'>";
         htmlCollapsible += key;
-        htmlCollapsible += "</a></h4></div><div id='collapse"+key+"' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='heading"+key+"'><div class='panel-body'><ul class='event-list'>";
+        htmlCollapsible += "</a></h4></div><div id='collapse-"+key+"' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='heading-"+key+"'><div class='panel-body'><ul class='event-list'>";
         htmlCollapsible += value;
         htmlCollapsible += "</ul></div></div></div></div>";
         $('#eventList').append(htmlCollapsible);

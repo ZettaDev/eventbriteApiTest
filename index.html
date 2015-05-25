@@ -6,7 +6,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>eventbrite</title>
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <style type="text/css">
    /* http://meyerweb.com/eric/tools/css/reset/
       v2.0 | 20110126
@@ -70,6 +70,8 @@
                 text-align: center;
             }
         </style>
+        <link href="./css/eventlist.css" rel="stylesheet">
+        <link href="./css/rotador.css" rel="stylesheet">
     </head>
     <body>
         <div class="container-fluid">
@@ -83,22 +85,37 @@
                         <div class="col-xs-3 youdontknownothing"><label for="fecha-fin">Fecha Final:</label></div>
                         <div class="col-xs-9 youdontknownothing"><input type="date" class="form-control" id="fecha-fin" /></div>
                     </div>
-                    <div class="form-group col-lg-4 col-md-4 col-s-12 col-xs-12">
+                    <div class="form-group col-lg-2 col-md-2 col-s-12 col-xs-12">
                         <div class="col-xs-3 youdontknownothing"><label for="category">Categoría:</label></div>
                         <div class="col-xs-9 youdontknownothing"><select id="category" class="form-control">
+                            <option value="todos">Todas</option>
                             <option value="1">Categoría 1</option>
                             <option value="2">Categoría 2</option>
                             <option value="3">Categoría 3</option>
                         </select></div>
                     </div>
+                    <div class="form-group col-lg-2 col-md-2 col-s-12 col-xs-12">
+                        <div class="col-xs-3 youdontknownothing"><label for="status">Status:</label></div>
+                        <div class="col-xs-9 youdontknownothing"><select id="status" class="form-control">
+                            <option value="todos">Todos</option>
+                            <option value="live">live</option>
+                            <option value="started">started</option>
+                            <option value="ended">ended</option>
+                            <option value="completed">completed</option>
+                            <option value="cancelled">cancelled</option>
+                        </select></div>
+                    </div>
                 </form>
             </div>
             <div class="row">
-                <div class="col-xs-12 main" role="main" id="eventList">MAIN</div>
+                <div class="col-xs-12 main" role="main" id="eventList"><img class="image" src="./img/innoLogo.png" alt="" width="120" height="120"></div>
             </div>
+
         </div>
-        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-        <script src="./js/normal.app.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="./bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="./bower_components/moment/min/moment.min.js"></script>
+        <script src="./bower_components/moment/min/locales.min.js"></script>
+        <script src="./js/historico.app.js"></script>
     </body>
 </html>

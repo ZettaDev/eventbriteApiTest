@@ -1,0 +1,17 @@
+.image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    margin:-60px 0 0 -60px;
+    -webkit-animation:spin 4s linear infinite;
+    -moz-animation:spin 4s linear infinite;
+    animation:spin 4s linear infinite;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+@-moz-keyframes spin { 100% { rotateY(360deg); -webkit-transform: rotateY(360deg); } }
+@-webkit-keyframes spin { 100% { rotateY(360deg); -webkit-transform: rotateY(360deg); } }
+@keyframes spin { 100% { rotateY(360deg); -webkit-transform: rotateY(360deg); } }

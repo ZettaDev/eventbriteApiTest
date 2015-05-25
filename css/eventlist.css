@@ -83,15 +83,15 @@
     background-color: #81B8E8;
 }
 
-.statusstarted {
+.status-started {
     background-color: #E8E381;
 }
 
-.statuscompleted, .statusended, .statuscancelled {
+.status-completed, .status-ended, .status-cancelled {
     background-color: #E88181;
 }
 
-.statuslive{
+.status-live{
     background-color: #81E89E;
 }
 
