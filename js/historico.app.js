@@ -12,6 +12,13 @@ var numPaginas = 1;
 var categoryApi = {} ;
 // fin variables
 
+// filtrado
+var filtradoFechaInicio = false;
+var filtradoFechaFin = false;
+//var filtradoCategorias = false;
+//var filtradoEstado = false;
+// fin de filtrado
+
 // ready
 $(document).ready( function() {
     // configuracion de moment.js
@@ -19,8 +26,8 @@ $(document).ready( function() {
     moment.locale(language);
     // fin de configuracion
     // eventros de inicio
-    $('#fecha-inici').on('change',filtradoFechaInici);
-    $('#fecha-fin').on('change',filtradoFechaFin);
+    $('#fecha-inici').on('change',fechaInici);
+    $('#fecha-fin').on('change',fechaFin);
     $('#category').on('change',filtradoCategoria);
     $('#status').on('change',filtradoStatus);
     $('#eventList').empty();
@@ -34,9 +41,11 @@ $(document).ready( function() {
 });
 
 // filtrar por fechas
-function filtradoFechaInici(e){
-    $('.categorias').hide();
+function fechaInici(e){
+    //$('.categorias').hide();
     var fromFechaInicio = $('#fecha-inici').val();
+    filtradoFechaInicio = true;
+    /*
     $('.categorias').find('time').each(function(i, time){
         if ($(time).hasClass('startdate')) {
             if(compararFecha(fromFechaInicio,$(time).attr('DATA-INNOBASQUE_EVENTBRITE_DATESTART')) != -1)   {
@@ -44,10 +53,14 @@ function filtradoFechaInici(e){
             }
         }
     });
+    */
+    filtrado();
 }
-function filtradoFechaFin(e){
-    $('.categorias').hide();
+function fechaFin(e){
+    //$('.categorias').hide();
     var fromFechaFin = $('#fecha-fin').val();
+    filtradoFechaFin = true;
+    /*
     $('.categorias').find('span').each(function(i, span){
         if ($(span).hasClass('enddate')){
             if(compararFecha(fromFechaFin,$(span).attr('DATA-INNOBASQUE_EVENTBRITE_DATEEND')) != -1)   {
@@ -55,22 +68,8 @@ function filtradoFechaFin(e){
             }
         }
     });
-}
-
-
-// comparador de rango de fechas
-function filtradoFecha2(fechaComprobar){
-    if ((fechaInicio != "") && (fechaFin != "") && (fechaComprobar != "")){
-        var from = fechaComprobar.split("-");
-        var dateComprobar = new Date(from[2], from[1] - 1, from[0]);
-        if (dateComprobar < fechaInicio){
-            return false;
-        } else if (dateComprobar > fechaFin) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+    */
+    filtrado();
 }
 
 // comparador de fechas
@@ -106,6 +105,15 @@ function filtradoStatus(e){
         $('.categorias').hide();
         $('.status-'+statusSeleccionada).closest('div .categorias').show();
     }
+}
+
+// funcion universal para filtrar
+function filtrado() {
+    $('.categorias').hide();
+    $('.categorias').each(function(i,categoria){
+
+    });
+
 }
 
 
@@ -190,9 +198,9 @@ function usoDatos(datos){
 function crearLista(categoryApi){
     // creamos el html
     $.each(categoryApi,function(key,value){
-        var htmlCollapsible = "<div class='panel-group categorias' id='accordion' role='tablist' aria-multiselectable='true'>";
+        var htmlCollapsible = "<div class='panel-group categorias' id='accordion-"+key+"' role='tablist' aria-multiselectable='true'>";
         htmlCollapsible += "<div class='panel panel-default'><div class='panel-heading' role='tab' id='heading-"+key+"'><h4 class='panel-title'>";
-        htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion' href='#collapse-"+key+"' aria-expanded='true' aria-controls='collapse-"+key+"'>";
+        htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion-"+key+"' href='#collapse-"+key+"' aria-expanded='true' aria-controls='collapse-"+key+"'>";
         htmlCollapsible += key;
         htmlCollapsible += "</a></h4></div><div id='collapse-"+key+"' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='heading-"+key+"'><div class='panel-body'><ul class='event-list'>";
         htmlCollapsible += value;
