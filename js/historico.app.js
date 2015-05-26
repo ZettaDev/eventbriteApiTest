@@ -1,3 +1,5 @@
+/*global $:false*/
+/*jslint maxerr: 10, plusplus: true, indent: 4*/
 "use strict";
 // configuracion global
 var eventBriteToken = "";
