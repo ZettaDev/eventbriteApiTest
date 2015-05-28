@@ -10,6 +10,7 @@ var eventBriteUserId = "141339170718";
 var paginaActual = 1;
 var numPaginas = 1;
 var categoryApi = {};
+var categoryData = {};
 // fin variables
 
 // filtrado
@@ -189,7 +190,7 @@ function usoDatos(datos) {
 }
 
 // creamos la lista de eventos
-function crearLista(categoryApi) {
+function crearLista(categoryApi, categoryData) {
     'use strict';
     var collapse = false,
         htmlCollapsible;
@@ -203,7 +204,7 @@ function crearLista(categoryApi) {
         } else {
             htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion' href='#collapse-" + key + "' aria-expanded='true' aria-controls='collapse-" + key + "'>";
         }
-        htmlCollapsible += key;
+        htmlCollapsible += categoryData[key];
         if (collapse) {
             htmlCollapsible += "</a></h4></div><div id='collapse-" + key + "' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading-" + key + "'><div class='panel-body'><ul class='event-list'>";
         } else {
@@ -220,7 +221,8 @@ function crearLista(categoryApi) {
 // llamada recursiva para mas paginas
 function llamadaApi() {
     'use strict';
-    var urlApi = "";
+    var urlApi = "",
+        urlData = "";
     urlApi = "https://www.eventbriteapi.com/v3/users/" + eventBriteUserId + "/owned_events/?order_by=start_desc&page=" + paginaActual + "&token=" + eventBriteToken;
     if (paginaActual <= numPaginas) {
         $.getJSON(urlApi, function (data) {
@@ -230,8 +232,12 @@ function llamadaApi() {
             llamadaApi();
         });
     }
+    urlData = "js/data.json";
+    $.getJSON(urlData, function (data) {
+        categoryData = data;
+    });
     // llamamos a la funcion pasandole el array para que genere el html a mostrar
-    crearLista(categoryApi);
+    crearLista(categoryApi, categoryData);
 }
 
 function collapseExpand() {
@@ -278,4 +284,5 @@ $(document).ready(function () {
     paginaActual = 1;
     categoryApi = {};
     llamadaApi();
+    collapseExpand();
 });
