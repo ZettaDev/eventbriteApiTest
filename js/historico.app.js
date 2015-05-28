@@ -230,14 +230,19 @@ function llamadaApi() {
             usoDatos(data);
             paginaActual += 1;
             llamadaApi();
+
+            urlData = "js/data.json";
+            $.getJSON(urlData, function (data) {
+                categoryData = data;
+                // llamamos a la funcion pasandole el array para que genere el html a mostrar
+                crearLista(categoryApi, categoryData);
+            }).fail(function() {
+                console.log( "error cargando categorias" );
+            });
+        }).fail(function() {
+            console.log( "error cargando datos" );
         });
     }
-    urlData = "js/data.json";
-    $.getJSON(urlData, function (data) {
-        categoryData = data;
-    });
-    // llamamos a la funcion pasandole el array para que genere el html a mostrar
-    crearLista(categoryApi, categoryData);
 }
 
 function collapseExpand() {
