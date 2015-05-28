@@ -7,63 +7,16 @@ var eventBriteUserId = "141339170718";
 // fin config
 
 // variables
-var fechaInicio = "";
-var fechaFin = "";
 var paginaActual = 1;
 var numPaginas = 1;
 var categoryApi = {};
 // fin variables
 
 // filtrado
-var filtradoFechaInicio = false;
-var filtradoFechaFin = false;
-//var filtradoCategorias = false;
-//var filtradoEstado = false;
+var llamarFiltradoFechaInicio = false;
+var llamarFiltradoFechaFin = false;
+var llamarFiltradoEstado = false;
 // fin de filtrado
-
-// funcion universal para filtrar
-function filtrado() {
-    'use strict';
-    $('.categorias').hide();
-    $('.categorias').each(function (i, categoria) {
-
-    });
-
-}
-
-// filtrar por fechas
-function fechaInici(e) {
-    'use strict';
-    //$('.categorias').hide();
-    var fromFechaInicio = $('#fecha-inici').val();
-    filtradoFechaInicio = true;
-    /*
-    $('.categorias').find('time').each(function(i, time){
-        if ($(time).hasClass('startdate')) {
-            if(compararFecha(fromFechaInicio,$(time).attr('DATA-INNOBASQUE_EVENTBRITE_DATESTART')) != -1)   {
-                $(time).closest('div .categorias').show();
-            }
-        }
-    });
-    */
-    filtrado();
-}
-function fechaFin(e) {
-    'use strict';
-    //$('.categorias').hide();
-    var fromFechaFin = $('#fecha-fin').val();
-    filtradoFechaFin = true;
-    /*
-    $('.categorias').find('span').each(function(i, span){
-        if ($(span).hasClass('enddate')){
-            if(compararFecha(fromFechaFin,$(span).attr('DATA-INNOBASQUE_EVENTBRITE_DATEEND')) != -1)   {
-                $(span).closest('div .categorias').show();
-            }
-        }
-    });
-    */
-    filtrado();
-}
 
 // comparador de fechas
 function compararFecha(fechaOriginal, fechaComprobar) {
@@ -78,6 +31,90 @@ function compararFecha(fechaOriginal, fechaComprobar) {
     }
 }
 
+// funcion universal para filtrar
+function filtrado() {
+    'use strict';
+    $('.evento').hide();
+    $('.evento').each(function (i, evento) {
+        if (llamarFiltradoFechaInicio) {
+            $(evento).find('time').each(function (i, tag) {
+                if ($(tag).hasClass('startdate')) {
+                    if (compararFecha($('#fecha-inici').val(), $(tag).attr('DATA-INNOBASQUE_EVENTBRITE_DATESTART')) !== -1) {
+                        if (llamarFiltradoFechaFin) {
+                            $(evento).find('span').each(function (i, end) {
+                                if ($(end).hasClass('enddate')) {
+                                    if (compararFecha($('#fecha-fin').val(), $(end).attr('DATA-INNOBASQUE_EVENTBRITE_DATEEND')) !== -1) {
+                                        if ($("#status").val() === "todos") {
+                                            $(evento).show();
+                                        } else {
+                                            $(evento).find('.status-' + $("#status").val()).closest('div .evento').show();
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            if ($("#status").val() === "todos") {
+                                $(evento).show();
+                            } else {
+                                $(evento).find('.status-' + $("#status").val()).closest('div .evento').show();
+                            }
+                        }
+                    }
+                }
+            });
+        } else if (llamarFiltradoFechaFin) {
+            $(evento).find('span').each(function (i, tag) {
+                if ($(tag).hasClass('enddate')) {
+                    if (compararFecha($('#fecha-fin').val(), $(tag).attr('DATA-INNOBASQUE_EVENTBRITE_DATEEND')) !== -1) {
+                        if ($("#status").val() === "todos") {
+                            $(evento).show();
+                        } else {
+                            $(evento).find('.status-' + $("#status").val()).closest('div .evento').show();
+                        }
+                    }
+                }
+            });
+        } else if (llamarFiltradoEstado) {
+            if ($("#status").val() === "todos") {
+                $(evento).show();
+            } else {
+                $('.status-' + $("#status").val()).closest('div .evento').show();
+            }
+        }
+    });
+    $('.categorias').each(function (i, categoria) {
+        $(categoria).show();
+        var centinela = true;
+        $(categoria).find('.evento').each(function (i, evento) {
+            if ($(evento).is(":visible")) {
+                centinela = false;
+            }
+        });
+        if (centinela) {
+            $(categoria).hide();
+        }
+    });
+}
+
+// filtrar por status
+function filtradoStatus(e) {
+    'use strict';
+    llamarFiltradoEstado = true;
+    filtrado();
+}
+
+// filtrar por fechas
+function fechaInici(e) {
+    'use strict';
+    llamarFiltradoFechaInicio = true;
+    filtrado();
+}
+function fechaFin(e) {
+    'use strict';
+    llamarFiltradoFechaFin = true;
+    filtrado();
+}
+
 // filtrar por categorias
 function filtradoCategoria(e) {
     'use strict';
@@ -90,24 +127,12 @@ function filtradoCategoria(e) {
     }
 }
 
-// filtrar por status
-function filtradoStatus(e) {
-    'use strict';
-    var statusSeleccionada = $("#status").val();
-    if (statusSeleccionada === "todos") {
-        $('.categorias').show();
-    } else {
-        $('.categorias').hide();
-        $('.status-' + statusSeleccionada).closest('div .categorias').show();
-    }
-}
-
 // llamada y maquetacion de la respuesta de la api
 function usoDatos(datos) {
     'use strict';
     $.each(datos.events, function (i, evento) {
         // creacion del evento html
-        var htmlOut = "<li id='evento'>",
+        var htmlOut = "<li class='evento'>",
             startMoment = moment(evento.start.local),
             endMoment = moment(evento.end.local),
             parser = new DOMParser(),
@@ -166,17 +191,30 @@ function usoDatos(datos) {
 // creamos la lista de eventos
 function crearLista(categoryApi) {
     'use strict';
+    var collapse = false,
+        htmlCollapsible;
     // creamos el html
+    $('#eventList').empty();
+    htmlCollapsible = "<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>";
     $.each(categoryApi, function (key, value) {
-        var htmlCollapsible = "<div class='panel-group categorias' id='accordion-" + key + "' role='tablist' aria-multiselectable='true'>";
-        htmlCollapsible += "<div class='panel panel-default'><div class='panel-heading' role='tab' id='heading-" + key + "'><h4 class='panel-title'>";
-        htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion-" + key + "' href='#collapse-" + key + "' aria-expanded='true' aria-controls='collapse-" + key + "'>";
+        htmlCollapsible += "<div class='panel panel-default categorias'><div class='panel-heading' role='tab' id='heading-" + key + "'><h4 class='panel-title'><span class='collapse-init-button glyphicon glyphicon-sort' data-active='true' title='Expandir / Colapsar' style='cursor: pointer;' aria-hidden='true'></span>";
+        if (collapse) {
+            htmlCollapsible += "<a class='collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapse-" + key + "' aria-expanded='false' aria-controls='collapse-" + key + "'>";
+        } else {
+            htmlCollapsible += "<a data-toggle='collapse' data-parent='#accordion' href='#collapse-" + key + "' aria-expanded='true' aria-controls='collapse-" + key + "'>";
+        }
         htmlCollapsible += key;
-        htmlCollapsible += "</a></h4></div><div id='collapse-" + key + "' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='heading-" + key + "'><div class='panel-body'><ul class='event-list'>";
+        if (collapse) {
+            htmlCollapsible += "</a></h4></div><div id='collapse-" + key + "' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading-" + key + "'><div class='panel-body'><ul class='event-list'>";
+        } else {
+            htmlCollapsible += "</a></h4></div><div id='collapse-" + key + "' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='heading-" + key + "'><div class='panel-body'><ul class='event-list'>";
+        }
         htmlCollapsible += value;
-        htmlCollapsible += "</ul></div></div></div></div>";
-        $('#eventList').append(htmlCollapsible);
+        htmlCollapsible += "</ul></div></div></div>";
+        collapse = true;
     });
+    htmlCollapsible += "</div>";
+    $('#eventList').append(htmlCollapsible);
 }
 
 // llamada recursiva para mas paginas
@@ -184,7 +222,6 @@ function llamadaApi() {
     'use strict';
     var urlApi = "";
     urlApi = "https://www.eventbriteapi.com/v3/users/" + eventBriteUserId + "/owned_events/?order_by=start_desc&page=" + paginaActual + "&token=" + eventBriteToken;
-    //urlApi = "js/data.json";
     if (paginaActual <= numPaginas) {
         $.getJSON(urlApi, function (data) {
             numPaginas = data.pagination.page_count;
@@ -197,6 +234,32 @@ function llamadaApi() {
     crearLista(categoryApi);
 }
 
+function collapseExpand() {
+    'use strict';
+    var active;
+
+    if ($('.collapse-init-button').length !== 0) {
+        $('.collapse-init-button').click(function () {
+            active = event.currentTarget.getAttribute('data-active');
+
+            if (active === 'true') {
+                event.currentTarget.setAttribute('data-active', "false");
+                // collapse from registro
+                $(this).closest(".panel-group").find(".list-group").find('.panel-collapse').collapse('hide');
+                // collapse inside registro
+                //$(this).parent().find('.panel-collapse').collapse('hide');
+                $('.panel-title').attr('data-toggle', 'collapse');
+            } else {
+                event.currentTarget.setAttribute('data-active', "true");
+                // collapse from registro
+                $(this).closest(".panel-group").find(".list-group").find('.panel-collapse').collapse('show');
+                // collapse inside registro
+                //$(this).parent().find('.panel-collapse').collapse('show');
+                $('.panel-title').attr('data-toggle', '');
+            }
+        });
+    }
+}
 
 // ready
 $(document).ready(function () {
@@ -210,11 +273,8 @@ $(document).ready(function () {
     $('#fecha-fin').on('change', fechaFin);
     $('#category').on('change', filtradoCategoria);
     $('#status').on('change', filtradoStatus);
-    $('#eventList').empty();
     // fin de eventos
     // inicio de la app
-    fechaInicio = "";
-    fechaFin = "";
     paginaActual = 1;
     categoryApi = {};
     llamadaApi();
