@@ -189,6 +189,7 @@ function usoDatos(datos) {
 
 }
 
+
 // creamos la lista de eventos
 function crearLista(categoryApi, categoryData) {
     'use strict';
@@ -198,7 +199,7 @@ function crearLista(categoryApi, categoryData) {
     $('#eventList').empty();
     htmlCollapsible = "<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>";
     $.each(categoryApi, function (key, value) {
-        htmlCollapsible += "<div class='panel panel-default categorias'><div class='panel-heading' role='tab' id='heading-" + key + "'><h4 class='panel-title'><span class='collapse-init-button glyphicon glyphicon-sort' data-active='true' title='Expandir / Colapsar' style='cursor: pointer;' aria-hidden='true'></span>";
+        htmlCollapsible += "<div class='panel panel-default categorias'><div class='panel-heading' role='tab' id='heading-" + key + "'><h4 class='panel-title'>";
         if (collapse) {
             htmlCollapsible += "<a class='collapsed' data-toggle='collapse' data-parent='#accordion' href='#collapse-" + key + "' aria-expanded='false' aria-controls='collapse-" + key + "'>";
         } else {
@@ -216,6 +217,7 @@ function crearLista(categoryApi, categoryData) {
     });
     htmlCollapsible += "</div>";
     $('#eventList').append(htmlCollapsible);
+    collapseExpand();
 }
 
 // llamada recursiva para mas paginas
@@ -243,7 +245,6 @@ function llamadaApi() {
 function collapseExpand() {
     'use strict';
     var active;
-
     if ($('.collapse-init-button').length !== 0) {
         $('.collapse-init-button').click(function () {
             active = event.currentTarget.getAttribute('data-active');
@@ -251,14 +252,14 @@ function collapseExpand() {
             if (active === 'true') {
                 event.currentTarget.setAttribute('data-active', "false");
                 // collapse from registro
-                $(this).closest(".panel-group").find(".list-group").find('.panel-collapse').collapse('hide');
+                $('#accordion').closest(".panel-group").find('.panel-collapse').collapse('hide');
                 // collapse inside registro
                 //$(this).parent().find('.panel-collapse').collapse('hide');
                 $('.panel-title').attr('data-toggle', 'collapse');
             } else {
                 event.currentTarget.setAttribute('data-active', "true");
                 // collapse from registro
-                $(this).closest(".panel-group").find(".list-group").find('.panel-collapse').collapse('show');
+                $('#accordion').closest(".panel-group").find('.panel-collapse').collapse('show');
                 // collapse inside registro
                 //$(this).parent().find('.panel-collapse').collapse('show');
                 $('.panel-title').attr('data-toggle', '');
@@ -284,5 +285,4 @@ $(document).ready(function () {
     paginaActual = 1;
     categoryApi = {};
     llamadaApi();
-    collapseExpand();
 });
