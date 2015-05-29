@@ -1,4 +1,4 @@
-/*global $:false, moment:false, DOMParser:false*/
+/*global $:false, moment:false, DOMParser:false, console:false*/
 /*jslint maxerr: 10, plusplus: true, indent: 4*/
 
 // configuracion global
@@ -186,9 +186,33 @@ function usoDatos(datos) {
             }
         }
     });
-
 }
 
+function collapseExpand() {
+    'use strict';
+    var active;
+    if ($('.collapse-init-button').length !== 0) {
+        $('.collapse-init-button').click(function () {
+            active = event.currentTarget.getAttribute('data-active');
+
+            if (active === 'true') {
+                event.currentTarget.setAttribute('data-active', "false");
+                // collapse from registro
+                $('#accordion').closest(".panel-group").find('.panel-collapse').collapse('hide');
+                // collapse inside registro
+                //$(this).parent().find('.panel-collapse').collapse('hide');
+                $('.panel-title').attr('data-toggle', 'collapse');
+            } else {
+                event.currentTarget.setAttribute('data-active', "true");
+                // collapse from registro
+                $('#accordion').closest(".panel-group").find('.panel-collapse').collapse('show');
+                // collapse inside registro
+                //$(this).parent().find('.panel-collapse').collapse('show');
+                $('.panel-title').attr('data-toggle', '');
+            }
+        });
+    }
+}
 
 // creamos la lista de eventos
 function crearLista(categoryApi, categoryData) {
@@ -238,37 +262,11 @@ function llamadaApi() {
                 categoryData = data;
                 // llamamos a la funcion pasandole el array para que genere el html a mostrar
                 crearLista(categoryApi, categoryData);
-            }).fail(function() {
-                console.log( "error cargando categorias" );
+            }).fail(function () {
+                console.log("error cargando categorias");
             });
-        }).fail(function() {
-            console.log( "error cargando datos" );
-        });
-    }
-}
-
-function collapseExpand() {
-    'use strict';
-    var active;
-    if ($('.collapse-init-button').length !== 0) {
-        $('.collapse-init-button').click(function () {
-            active = event.currentTarget.getAttribute('data-active');
-
-            if (active === 'true') {
-                event.currentTarget.setAttribute('data-active', "false");
-                // collapse from registro
-                $('#accordion').closest(".panel-group").find('.panel-collapse').collapse('hide');
-                // collapse inside registro
-                //$(this).parent().find('.panel-collapse').collapse('hide');
-                $('.panel-title').attr('data-toggle', 'collapse');
-            } else {
-                event.currentTarget.setAttribute('data-active', "true");
-                // collapse from registro
-                $('#accordion').closest(".panel-group").find('.panel-collapse').collapse('show');
-                // collapse inside registro
-                //$(this).parent().find('.panel-collapse').collapse('show');
-                $('.panel-title').attr('data-toggle', '');
-            }
+        }).fail(function () {
+            console.log("error cargando datos");
         });
     }
 }
