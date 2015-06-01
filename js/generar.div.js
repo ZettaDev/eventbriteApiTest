@@ -1,4 +1,4 @@
-/*global $:false*/
+/*global $:false, ZeroClipboard:false*/
 /*jslint maxerr: 10, plusplus: true, indent: 4*/
 
 function generarDiv() {
@@ -6,13 +6,19 @@ function generarDiv() {
     var categorias = $('#choosen_select').val(),
         div_generado = "",
         date = new Date();
-    div_generado += "&lt;div data-innobasque_eventbrite_category='";
+    div_generado += "<div data-innobasque_eventbrite_category='";
     div_generado += categorias.toString();
     div_generado += "' DATA-INNOBASQUE_EVENTBRITE_TIMESTAMP='";
     div_generado += date.toJSON();
-    div_generado += "'&gt;&lt;/div&gt;";
+    div_generado += "'></div>";
     $('#output_div').empty();
-    $('#output_div').append(div_generado);
+    $('#output_div').text(div_generado);
+    $("body").on("copy", ".zclip", function(/* ClipboardEvent */ e) {
+        console.log(div_generado);
+        e.clipboardData.clearData();
+        e.clipboardData.setData("text/plain", div_generado);
+        e.preventDefault();
+      });
 }
 
 // ready

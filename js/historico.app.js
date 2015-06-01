@@ -84,7 +84,7 @@ function filtrado() {
         }
     });
     $('.categorias').each(function (i, categoria) {
-        $(categoria).show();
+        $(categoria).find('.panel-collapse').collapse('show');
         var centinela = true;
         $(categoria).find('.evento').each(function (i, evento) {
             if ($(evento).is(":visible")) {
@@ -92,7 +92,7 @@ function filtrado() {
             }
         });
         if (centinela) {
-            $(categoria).hide();
+            $(categoria).find('.panel-collapse').collapse('hide');
         }
     });
 }
