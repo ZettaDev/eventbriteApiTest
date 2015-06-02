@@ -40,11 +40,11 @@ function filtrado() {
         if (llamarFiltradoFechaInicio) {
             $(evento).find('time').each(function (i, tag) {
                 if ($(tag).hasClass('startdate')) {
-                    if (compararFecha($('#fecha-inici').val(), $(tag).attr('DATA-INNOBASQUE_EVENTBRITE_DATESTART')) !== -1) {
+                    if (compararFecha($('#fecha-inici').val(), $(tag).attr('DATA-EVENTBRITE_DATESTART')) !== -1) {
                         if (llamarFiltradoFechaFin) {
                             $(evento).find('span').each(function (i, end) {
                                 if ($(end).hasClass('enddate')) {
-                                    if (compararFecha($('#fecha-fin').val(), $(end).attr('DATA-INNOBASQUE_EVENTBRITE_DATEEND')) !== -1) {
+                                    if (compararFecha($('#fecha-fin').val(), $(end).attr('DATA-EVENTBRITE_DATEEND')) !== -1) {
                                         if ($("#status").val() === "todos") {
                                             $(evento).show();
                                         } else {
@@ -66,7 +66,7 @@ function filtrado() {
         } else if (llamarFiltradoFechaFin) {
             $(evento).find('span').each(function (i, tag) {
                 if ($(tag).hasClass('enddate')) {
-                    if (compararFecha($('#fecha-fin').val(), $(tag).attr('DATA-INNOBASQUE_EVENTBRITE_DATEEND')) !== -1) {
+                    if (compararFecha($('#fecha-fin').val(), $(tag).attr('DATA-EVENTBRITE_DATEEND')) !== 1) {
                         if ($("#status").val() === "todos") {
                             $(evento).show();
                         } else {
@@ -142,7 +142,7 @@ function usoDatos(datos) {
             divNuevo = null,
             categoriasEvento = "";
 
-        htmlOut += "<time class='startdate' DATA-INNOBASQUE_EVENTBRITE_DATESTART='" + startMoment.format('YYYY[-]MM[-]DD') + "'><span class='day'>" + startMoment.format("D") + "</span><span class='month'>" + startMoment.format("MMM") + "</span></time>";
+        htmlOut += "<time class='startdate' DATA-EVENTBRITE_DATESTART='" + startMoment.format('YYYY[-]MM[-]DD') + "'><span class='day'>" + startMoment.format("D") + "</span><span class='month'>" + startMoment.format("MMM") + "</span></time>";
         if (evento.logo) {
             htmlOut += "<img src='" + evento.logo.url + "'/>";
         }
@@ -150,21 +150,21 @@ function usoDatos(datos) {
         htmlOut += "<p class='desc'>" + evento.description.text.substr(1, 700) + "...</p>";
         htmlOut += "<ul>";
         htmlOut += "<span class='status-" + evento.status + "' style='width:33%;'>Status: " + evento.status + "</span>";
-        htmlOut += "<span class='enddate' style='width:33%;' DATA-INNOBASQUE_EVENTBRITE_DATEEND='" + endMoment.format('YYYY[-]MM[-]DD') + "'>Finaliza el: " + endMoment.format("LLLL") + "</span>";
+        htmlOut += "<span class='enddate' style='width:33%;' DATA-EVENTBRITE_DATEEND='" + endMoment.format('YYYY[-]MM[-]DD') + "'>Finaliza el: " + endMoment.format("LLLL") + "</span>";
         htmlOut += "<li style='width:33%;'><a href='https://www.eventbrite.com/edit?eid=" + evento.id + "'> Editar</a></li>";
         htmlOut += "</ul></div></li>";
         // fin del evento html
 
         // filtrado por categorias
-        $(doc).find('div[DATA-INNOBASQUE_EVENTBRITE_CATEGORY]').each(function (i, div) {
-            var fechaComparar = new Date($(div).attr('DATA-INNOBASQUE_EVENTBRITE_TIMESTAMP'));
+        $(doc).find('div[DATA-EVENTBRITE_CATEGORY]').each(function (i, div) {
+            var fechaComparar = new Date($(div).attr('DATA-EVENTBRITE_TIMESTAMP'));
             if (fechaComparar > fechaNueva) {
                 fechaNueva = fechaComparar;
                 divNuevo = div;
             }
         });
         if (divNuevo !== null) {
-            categoriasEvento = $(divNuevo).attr('DATA-INNOBASQUE_EVENTBRITE_CATEGORY');
+            categoriasEvento = $(divNuevo).attr('DATA-EVENTBRITE_CATEGORY');
         }
         // preguntamos si tiene categorias o esta vacio
         if (categoriasEvento.length) {

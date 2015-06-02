@@ -6,19 +6,13 @@ function generarDiv() {
     var categorias = $('#choosen_select').val(),
         div_generado = "",
         date = new Date();
-    div_generado += "<div data-innobasque_eventbrite_category='";
+    div_generado += "<div data-eventbrite_category='";
     div_generado += categorias.toString();
-    div_generado += "' DATA-INNOBASQUE_EVENTBRITE_TIMESTAMP='";
+    div_generado += "' DATA-EVENTBRITE_TIMESTAMP='";
     div_generado += date.toJSON();
     div_generado += "'></div>";
     $('#output_div').empty();
     $('#output_div').text(div_generado);
-    $("body").on("copy", ".zclip", function(/* ClipboardEvent */ e) {
-        console.log(div_generado);
-        e.clipboardData.clearData();
-        e.clipboardData.setData("text/plain", div_generado);
-        e.preventDefault();
-      });
 }
 
 // ready
