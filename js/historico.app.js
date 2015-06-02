@@ -242,6 +242,7 @@ function crearLista(categoryApi, categoryData) {
     htmlCollapsible += "</div>";
     $('#eventList').append(htmlCollapsible);
     collapseExpand();
+    $('#accordion').closest(".panel-group").find('.panel-collapse').collapse('show');
 }
 
 // llamada recursiva para mas paginas
