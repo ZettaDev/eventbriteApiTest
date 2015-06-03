@@ -86,6 +86,8 @@
                 }
             }
         });
+        // Colapsa las categorias que no tienen ningun evento que coincida con el filtro
+        /*
         $('.categorias').each(function (i, categoria) {
             $(categoria).find('.panel-collapse').collapse('show');
             var centinela = true;
@@ -98,6 +100,7 @@
                 $(categoria).find('.panel-collapse').collapse('hide');
             }
         });
+        */
     }
 
     // filtrar por status
