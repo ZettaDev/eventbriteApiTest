@@ -35,7 +35,7 @@
     }
 
     // funcion universal para filtrar
-    function filtrado() {
+    function filtrado(ev) {
         $('.evento').hide();
         $('.evento').each(function (i, evento) {
             if (llamarFiltradoFechaInicio) {
@@ -80,6 +80,8 @@
                 if ($("#status").val() === "todos") {
                     $(evento).show();
                 } else {
+                    // Evitamos que se genere un toggle con el acordion
+                    ev.stopImmediatePropagation();
                     $('.status-' + $("#status").val()).closest('div .evento').show();
                 }
             }
