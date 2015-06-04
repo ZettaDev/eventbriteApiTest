@@ -248,6 +248,7 @@
         collapseExpand();
         $('#accordion').closest(".panel-group").find('.panel-collapse').collapse('show');
         $('#loading').hide();
+        $('#loadMore').show();
     }
 
     // llamada recursiva para mas paginas
@@ -271,11 +272,15 @@
             }).fail(function () {
                 console.log("error cargando datos");
             });
+        } else {
+            $('#loading').hide();
+            $('#loadMore').show();
         }
     }
 
     function cargarMas() {
         $('#loading').show();
+        $('#loadMore').hide();
         $('#fecha-inici').val("");
         $('#fecha-fin').val("");
         $('#category').val("");
@@ -299,6 +304,7 @@
         // fin de eventos
         // inicio de la app
         $('#loading').show();
+        $('#loadMore').hide();
         paginaActual = 1;
         categoryApi = {};
         llamadaApi();
