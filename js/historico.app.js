@@ -5,8 +5,8 @@
 (function () {
     'use strict';
     // configuracion global
-    var eventBriteToken = "B7ZR4LUBCZKYBZ7ZPRU3";
-    var eventBriteUserId = "53941991154";
+    var eventBriteToken = "";
+    var eventBriteUserId = "";
     // fin config
 
     // variables
@@ -247,6 +247,7 @@
         $('#eventList').append(htmlCollapsible);
         collapseExpand();
         $('#accordion').closest(".panel-group").find('.panel-collapse').collapse('show');
+        $('#loading').hide();
     }
 
     // llamada recursiva para mas paginas
@@ -274,6 +275,7 @@
     }
 
     function cargarMas() {
+        $('#loading').show();
         $('#fecha-inici').val("");
         $('#fecha-fin').val("");
         $('#category').val("");
@@ -296,6 +298,7 @@
         $('#loadMore').on('click', cargarMas);
         // fin de eventos
         // inicio de la app
+        $('#loading').show();
         paginaActual = 1;
         categoryApi = {};
         llamadaApi();
