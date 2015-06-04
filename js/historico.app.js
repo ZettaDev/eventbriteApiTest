@@ -6,7 +6,7 @@
     'use strict';
     // configuracion global
     var eventBriteToken = "";
-    var eventBriteUserId = "141339170718";
+    var eventBriteUserId = "";
     // fin config
 
     // variables
@@ -138,17 +138,21 @@
                 startMoment = moment(evento.start.local),
                 endMoment = moment(evento.end.local),
                 parser = new DOMParser(),
-                doc = parser.parseFromString(evento.description.html, "text/html"),
+                doc,
                 fechaNueva = new Date('0001-01-01T00:00:00Z'),
                 divNuevo = null,
                 categoriasEvento = "";
-
+            if (evento.description != null) {
+                doc = parser.parseFromString(evento.description.html, "text/html");
+            }
             htmlOut += "<time class='startdate' DATA-EVENTBRITE_DATESTART='" + startMoment.format('YYYY[-]MM[-]DD') + "'><span class='day'>" + startMoment.format("D") + "</span><span class='month'>" + startMoment.format("MMM") + "</span></time>";
             if (evento.logo) {
                 htmlOut += "<img src='" + evento.logo.url + "'/>";
             }
             htmlOut += "<div class='info'><h2 class='title'>" + evento.name.html + "</h2>";
-            htmlOut += "<p class='desc'>" + evento.description.text.substr(1, 700) + "...</p>";
+            if (evento.description != null) {
+                htmlOut += "<p class='desc'>" + evento.description.text.substr(1, 700) + "...</p>";
+            }
             htmlOut += "<ul>";
             htmlOut += "<span class='status-" + evento.status + "' style='width:33%;'>Status: " + evento.status + "</span>";
             htmlOut += "<span class='enddate' style='width:33%;' DATA-EVENTBRITE_DATEEND='" + endMoment.format('YYYY[-]MM[-]DD') + "'>Finaliza el: " + endMoment.format("LLLL") + "</span>";
