@@ -5,8 +5,8 @@
 (function () {
     'use strict';
     // configuracion global
-    var eventBriteToken = "";
-    var eventBriteUserId = "";
+    var eventBriteToken = "B7ZR4LUBCZKYBZ7ZPRU3";
+    var eventBriteUserId = "53941991154";
     // fin config
 
     // variables
@@ -259,8 +259,8 @@
             $.getJSON(urlApi, function (data) {
                 numPaginas = data.pagination.page_count;
                 usoDatos(data);
-                paginaActual += 1;
-                llamadaApi();
+                //paginaActual += 1;
+                //llamadaApi();
 
                 urlData = "js/data.json";
                 $.getJSON(urlData, function (data) {
