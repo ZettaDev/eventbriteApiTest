@@ -5,8 +5,8 @@
 (function () {
     'use strict';
     // configuracion global
-    var eventBriteToken = "";
-    var eventBriteUserId = "";
+    var eventBriteToken = "B7ZR4LUBCZKYBZ7ZPRU3";
+    var eventBriteUserId = "53941991154";
     // fin config
 
     // variables
@@ -81,7 +81,6 @@
                     $(evento).show();
                 } else {
                     // Evitamos que se genere un toggle con el acordion
-                    ev.stopImmediatePropagation();
                     $('.status-' + $("#status").val()).closest('div .evento').show();
                 }
             }
