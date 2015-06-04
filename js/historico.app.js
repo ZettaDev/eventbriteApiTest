@@ -152,6 +152,8 @@
             htmlOut += "<div class='info'><h2 class='title'>" + evento.name.html + "</h2>";
             if (evento.description != null) {
                 htmlOut += "<p class='desc'>" + evento.description.text.substr(1, 700) + "...</p>";
+            } else {
+                htmlOut += "<p class='desc'>No hay descripción</p>";
             }
             htmlOut += "<ul>";
             htmlOut += "<span class='status-" + evento.status + "' style='width:33%;'>Status: " + evento.status + "</span>";
