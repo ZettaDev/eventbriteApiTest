@@ -5,8 +5,8 @@
 (function () {
     'use strict';
     // configuracion global
-    var eventBriteToken = "B7ZR4LUBCZKYBZ7ZPRU3";
-    var eventBriteUserId = "53941991154";
+    var eventBriteToken = "";
+    var eventBriteUserId = "";
     // fin config
 
     // variables
@@ -259,8 +259,6 @@
             $.getJSON(urlApi, function (data) {
                 numPaginas = data.pagination.page_count;
                 usoDatos(data);
-                //paginaActual += 1;
-                //llamadaApi();
 
                 urlData = "js/data.json";
                 $.getJSON(urlData, function (data) {
@@ -276,6 +274,15 @@
         }
     }
 
+    function cargarMas() {
+        $('#fecha-inici').val("");
+        $('#fecha-fin').val("");
+        $('#category').val("");
+        $('#status').val("");
+        paginaActual += 1;
+        llamadaApi();
+    }
+
     // ready
     $(document).ready(function () {
         // configuracion de moment.js
@@ -287,6 +294,7 @@
         $('#fecha-fin').on('change', fechaFin);
         $('#category').on('change', filtradoCategoria);
         $('#status').on('change', filtradoStatus);
+        $('#loadMore').on('click', cargarMas);
         // fin de eventos
         // inicio de la app
         paginaActual = 1;
