@@ -272,6 +272,9 @@
             }).fail(function () {
                 console.log("error cargando datos");
             });
+        } else if (paginaActual > numPaginas) {
+            $('#loadMore').hide();
+            $('#loading').hide();
         } else {
             $('#loading').hide();
             $('#loadMore').show();
