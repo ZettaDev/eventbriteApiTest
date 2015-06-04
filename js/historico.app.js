@@ -80,7 +80,8 @@
                 if ($("#status").val() === "todos") {
                     $(evento).show();
                 } else {
-                    // Evitamos que se genere un toggle con el acordion
+
+
                     $('.status-' + $("#status").val()).closest('div .evento').show();
                 }
             }
