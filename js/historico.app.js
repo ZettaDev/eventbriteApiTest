@@ -80,8 +80,6 @@
                 if ($("#status").val() === "todos") {
                     $(evento).show();
                 } else {
-                    // Evitamos que se genere un toggle con el acordion
-                    ev.stopImmediatePropagation();
                     $('.status-' + $("#status").val()).closest('div .evento').show();
                 }
             }
