@@ -158,7 +158,8 @@
             htmlOut += "<ul>";
             htmlOut += "<span class='status-" + evento.status + "' style='width:33%;'>Status: " + evento.status + "</span>";
             htmlOut += "<span class='enddate' style='width:33%;' DATA-EVENTBRITE_DATEEND='" + endMoment.format('YYYY[-]MM[-]DD') + "'>Finaliza el: " + endMoment.format("LLLL") + "</span>";
-            htmlOut += "<li style='width:33%;'><a href='https://www.eventbrite.com/edit?eid=" + evento.id + "'> Editar</a></li>";
+            htmlOut += "<li style='width:16%;'><a href='evento.php?id=" + evento.id + "'> Ver</a></li>";
+            htmlOut += "<li style='width:16%;'><a href='https://www.eventbrite.com/edit?eid=" + evento.id + "'> Editar</a></li>";
             htmlOut += "</ul></div></li>";
             // fin del evento html
 
