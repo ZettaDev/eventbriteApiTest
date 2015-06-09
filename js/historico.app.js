@@ -80,8 +80,6 @@
                 if ($("#status").val() === "todos") {
                     $(evento).show();
                 } else {
-
-
                     $('.status-' + $("#status").val()).closest('div .evento').show();
                 }
             }
